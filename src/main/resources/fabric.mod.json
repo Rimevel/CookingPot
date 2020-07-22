@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "cooking_pot",
+  "version": "${version}",
+
+  "name": "Cooking Pot",
+  "description": "Become a culinary master!",
+  "authors": [
+    "Rimevel"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+
+  "license": "MIT",
+  "icon": "assets/modid/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.gmail.rimevel.cooking_pot.ModInit"
+    ],
+    "client": [
+      "com.gmail.rimevel.cooking_pot.client.ModInitClient"
+    ]
+  },
+  "mixins": [
+    "cooking_pot.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}
