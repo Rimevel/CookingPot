@@ -9,6 +9,8 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.Items;
+import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.ScreenHandlerType;
 
 import net.minecraft.util.registry.Registry;
@@ -36,6 +38,6 @@ public class ModInit implements ModInitializer
 		COOKING_POT_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, CookingPotBlock.ID.toString(), BlockEntityType.Builder.create(CookingPotBlockEntity::new, COOKING_POT).build(null));
 		
 		//Cooking pot - screen handler
-		COOKING_POT_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(CookingPotBlock.ID, (syncId, inventory) -> new CookingPotGui(COOKING_POT_SCREEN_HANDLER, syncId, inventory));
+		COOKING_POT_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(CookingPotBlock.ID, (syncId, inventory) -> new CookingPotGui(COOKING_POT_SCREEN_HANDLER, syncId, inventory, ScreenHandlerContext.EMPTY));
 	}
 }

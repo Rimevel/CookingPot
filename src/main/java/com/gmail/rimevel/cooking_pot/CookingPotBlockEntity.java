@@ -27,7 +27,19 @@ public class CookingPotBlockEntity extends BlockEntity implements ImplementedInv
 	@Override
 	public DefaultedList<ItemStack> getItems()
 	{
-		return null;
+		return items;
+	}
+
+	@Override
+	public int getMaxCountPerStack()
+	{
+		return 1;
+	}
+
+	@Override
+	public boolean isValid(int slot, ItemStack stack)
+	{
+		return stack.getItem().isFood();
 	}
 
 	@Override
@@ -62,6 +74,6 @@ public class CookingPotBlockEntity extends BlockEntity implements ImplementedInv
 	@Override
 	public ScreenHandler createMenu(int syncId, PlayerInventory inventory, PlayerEntity player)
 	{
-		return new CookingPotGui(ModInit.COOKING_POT_SCREEN_HANDLER, syncId, inventory);
+		return new CookingPotGui(ModInit.COOKING_POT_SCREEN_HANDLER, syncId, inventory, ScreenHandlerContext.create(world, pos));
 	}
 }

@@ -29,7 +29,7 @@ public class CookingPotBlock extends BlockWithEntity //implements BlockEntityPro
 	@Override
 	public BlockEntity createBlockEntity(BlockView world)
 	{
-		return null;
+		return new CookingPotBlockEntity();
 	}
 
 	@Override
