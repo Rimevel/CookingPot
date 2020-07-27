@@ -51,6 +51,20 @@ public interface ImplementedInventory extends Inventory
         }
         return true;
     }
+
+    /**
+     * Checks if the inventory is filled.
+     * @return true if this inventory has no empty stacks, false otherwise.
+     */
+    default boolean isFilled() {
+        for (int i = 0; i < size(); i++) {
+            ItemStack stack = getStack(i);
+            if (stack.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
  
     /**
      * Retrieves the item in the slot.

@@ -1,5 +1,35 @@
 {
-	"variants": {
-	  "": { "model": "cooking_pot:block/cooking_pot" }
+	"variants":
+	{
+		"facing=east,cooking=false": {
+			"model": "cooking_pot:block/cooking_pot",
+			"y": 270
+		  },
+		  "facing=east,cooking=true": {
+			"model": "cooking_pot:block/cooking_pot_lid",
+			"y": 270
+		  },
+		  "facing=north,cooking=false": {
+			"model": "cooking_pot:block/cooking_pot",
+			"y": 180
+		  },
+		  "facing=north,cooking=true": {
+			"model": "cooking_pot:block/cooking_pot_lid",
+			"y": 180
+		  },
+		  "facing=south,cooking=false": {
+			"model": "cooking_pot:block/cooking_pot"
+		  },
+		  "facing=south,cooking=true": {
+			"model": "cooking_pot:block/cooking_pot_lid"
+		  },
+		  "facing=west,cooking=false": {
+			"model": "cooking_pot:block/cooking_pot",
+			"y": 90
+		  },
+		  "facing=west,cooking=true": {
+			"model": "cooking_pot:block/cooking_pot_lid",
+			"y": 90
+		  }
 	}
 }

@@ -7,6 +7,7 @@
 		"3": "block/campfire_log",
 		"4": "cooking_pot:block/cooking_pot_frame",
 		"6": "block/campfire_log_lit",
+		"7": "cooking_pot:block/cooking_pot_lid",
 		"particle": "block/hopper_inside"
 	},
 	"elements": [
@@ -160,6 +161,20 @@
 				"up": {"uv": [0, 0, 16, 16], "texture": "#missing"},
 				"down": {"uv": [3, 3, 13, 13], "texture": "#2"}
 			}
+		},
+		{
+			"name": "lid",
+			"from": [1, 15, 1],
+			"to": [15, 16, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 15.5, 8]},
+			"faces": {
+				"north": {"uv": [1, 15, 15, 16], "texture": "#7"},
+				"east": {"uv": [1, 15, 15, 16], "texture": "#7"},
+				"south": {"uv": [1, 15, 15, 16], "texture": "#7"},
+				"west": {"uv": [1, 15, 15, 16], "texture": "#7"},
+				"up": {"uv": [1, 1, 15, 15], "texture": "#7"},
+				"down": {"uv": [0, 0, 14, 14], "texture": "#7"}
+			}
 		}
 	],
 	"display": {
@@ -200,5 +215,5 @@
 			"name": "campfire",
 			"origin": [8, 11, 8],
 			"children": [5, 6, 7, 8, 9]
-		}, 10]
+		}, 10, 11]
 }

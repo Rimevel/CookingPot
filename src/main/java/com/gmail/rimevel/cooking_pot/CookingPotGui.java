@@ -5,11 +5,8 @@ import java.util.function.Predicate;
 import io.github.cottonmc.cotton.gui.SyncedGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.cottonmc.cotton.gui.widget.WItemSlot;
-import io.github.cottonmc.cotton.gui.widget.WPanel;
-import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.ScreenHandlerType;
 
@@ -40,7 +37,7 @@ public class CookingPotGui extends SyncedGuiDescription
 		@Override
 		public boolean test(ItemStack itemStack)
 		{
-			return itemStack.getItem().isFood();
+			return CookingPotData.getIngredientGroups(itemStack.getItem()).length > 0;
 		}
 	}
 }
