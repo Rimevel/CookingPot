@@ -1,0 +1,22 @@
+{
+	"cooking_pot_cooking": {
+	  "sounds": [
+		"cooking_pot:cooking_pot_cooking"
+	  ]
+	},
+	"cooking_pot_lid_lift": {
+		"sounds": [
+		  "cooking_pot:cooking_pot_lid_lift"
+		]
+	},
+	"cooking_pot_lid_set": {
+		"sounds": [
+		  "cooking_pot:cooking_pot_lid_set"
+		]
+	},
+	"cooking_pot_lid_shake_1": {
+		"sounds": [
+		  "cooking_pot:cooking_pot_lid_shake_1"
+		]
+	}
+  }

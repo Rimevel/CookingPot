@@ -11,7 +11,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.ScreenHandlerType;
-
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class ModInit implements ModInitializer
@@ -23,6 +24,19 @@ public class ModInit implements ModInitializer
 	public static BlockEntityType<CookingPotBlockEntity> COOKING_POT_ENTITY;
 
 	public static ScreenHandlerType<CookingPotGui> COOKING_POT_SCREEN_HANDLER;
+
+	//INSTANCE: Cooking pot - sound events
+	public static final Identifier SOUND_POT_COOKING = new Identifier("cooking_pot:cooking_pot_cooking");
+	public static SoundEvent EVENT_SOUND_POT_COOKING = new SoundEvent(SOUND_POT_COOKING);
+
+	public static final Identifier SOUND_POT_LID_LIFT = new Identifier("cooking_pot:cooking_pot_lid_lift");
+	public static SoundEvent EVENT_SOUND_POT_LID_LIFT = new SoundEvent(SOUND_POT_LID_LIFT);
+
+	public static final Identifier SOUND_POT_LID_SET = new Identifier("cooking_pot:cooking_pot_lid_set");
+	public static SoundEvent EVENT_SOUND_POT_LID_SET = new SoundEvent(SOUND_POT_LID_SET);
+
+	public static final Identifier SOUND_POT_LID_SHAKE_1 = new Identifier("cooking_pot:cooking_pot_lid_shake_1");
+	public static SoundEvent EVENT_SOUND_POT_LID_SHAKE_1 = new SoundEvent(SOUND_POT_LID_SET);
 
 	@Override
 	public void onInitialize()
@@ -38,5 +52,11 @@ public class ModInit implements ModInitializer
 		
 		//Cooking pot - screen handler
 		COOKING_POT_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(CookingPotBlock.ID, (syncId, inventory) -> new CookingPotGui(COOKING_POT_SCREEN_HANDLER, syncId, inventory, ScreenHandlerContext.EMPTY));
+
+		//Cooking pot - sounds
+		Registry.register(Registry.SOUND_EVENT, SOUND_POT_COOKING, EVENT_SOUND_POT_COOKING);
+		Registry.register(Registry.SOUND_EVENT, SOUND_POT_LID_LIFT, EVENT_SOUND_POT_LID_LIFT);
+		Registry.register(Registry.SOUND_EVENT, SOUND_POT_LID_SET, EVENT_SOUND_POT_LID_SET);
+		Registry.register(Registry.SOUND_EVENT, SOUND_POT_LID_SHAKE_1, EVENT_SOUND_POT_LID_SHAKE_1);
 	}
 }

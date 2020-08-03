@@ -92,13 +92,6 @@ public class CookingPotData
 
 	public static FoodGroup[] getIngredientGroups(Item item)
 	{
-		//for (Map.Entry<Item, FoodGroup[]> ingredient : ingredients.entrySet())
-		//{
-		//	for (FoodGroup group : ingredient.getValue()) {
-		//		System.out.println(group.toString());
-		//	}
-		//}
-
 		if(ingredients.containsKey(item))
 		{
 			return ingredients.get(item);
@@ -127,8 +120,6 @@ public class CookingPotData
 		public boolean compare(ArrayList<FoodGroup> input)
 		{
 			ArrayList<FoodGroup> remaining = new ArrayList<FoodGroup>(Arrays.asList(this.groups));
-
-			System.out.println(input.size());
 
 			for (FoodGroup foodGroup : input)
 			{

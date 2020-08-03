@@ -21,7 +21,5 @@ public class ModInitClient implements ClientModInitializer
 		BlockRenderLayerMap.INSTANCE.putBlock(ModInit.COOKING_POT, RenderLayer.getCutout());
 
 		ScreenRegistry.<CookingPotGui, CookingPotScreen>register(ModInit.COOKING_POT_SCREEN_HANDLER, (Factory<CookingPotGui, CookingPotScreen>) (gui, inventory, title) -> new CookingPotScreen(gui, inventory.player, title));
-		
-		//(gui, inventory, title) -> new CookingPotScreen(gui, inventory.player, title)
 	}
 }

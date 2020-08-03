@@ -1,33 +1,48 @@
 {
 	"variants":
 	{
-		"facing=east,cooking=false": {
+		"facing=east,cooking=empty": {
 			"model": "cooking_pot:block/cooking_pot",
 			"y": 270
 		  },
-		  "facing=east,cooking=true": {
+		  "facing=east,cooking=cooking": {
 			"model": "cooking_pot:block/cooking_pot_lid",
 			"y": 270
 		  },
-		  "facing=north,cooking=false": {
+		  "facing=east,cooking=done": {
+			"model": "cooking_pot:block/cooking_pot_lid",
+			"y": 270
+		  },
+		  "facing=north,cooking=empty": {
 			"model": "cooking_pot:block/cooking_pot",
 			"y": 180
 		  },
-		  "facing=north,cooking=true": {
+		  "facing=north,cooking=cooking": {
 			"model": "cooking_pot:block/cooking_pot_lid",
 			"y": 180
 		  },
-		  "facing=south,cooking=false": {
+		  "facing=north,cooking=done": {
+			"model": "cooking_pot:block/cooking_pot_lid",
+			"y": 180
+		  },
+		  "facing=south,cooking=empty": {
 			"model": "cooking_pot:block/cooking_pot"
 		  },
-		  "facing=south,cooking=true": {
+		  "facing=south,cooking=cooking": {
 			"model": "cooking_pot:block/cooking_pot_lid"
 		  },
-		  "facing=west,cooking=false": {
+		  "facing=south,cooking=done": {
+			"model": "cooking_pot:block/cooking_pot_lid"
+		  },
+		  "facing=west,cooking=empty": {
 			"model": "cooking_pot:block/cooking_pot",
 			"y": 90
 		  },
-		  "facing=west,cooking=true": {
+		  "facing=west,cooking=cooking": {
+			"model": "cooking_pot:block/cooking_pot_lid",
+			"y": 90
+		  },
+		  "facing=west,cooking=done": {
 			"model": "cooking_pot:block/cooking_pot_lid",
 			"y": 90
 		  }

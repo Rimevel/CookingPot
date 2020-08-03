@@ -1,20 +1,21 @@
 package com.gmail.rimevel.cooking_pot;
 
+import java.util.Random;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager.Builder;
-import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
@@ -29,13 +30,13 @@ public class CookingPotBlock extends BlockWithEntity
 {
 	public static Identifier ID = new Identifier("cooking_pot", "cooking_pot");
 
-	public static final BooleanProperty COOKING =  BooleanProperty.of("cooking");
+	public static final EnumProperty<CookingPotState> COOKING = EnumProperty.of("cooking", CookingPotState.class);
 	public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
 	public CookingPotBlock(Settings settings)
 	{
 		super(settings);
-		setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(COOKING, false));
+		setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(COOKING, CookingPotState.EMPTY));
 	}
 
 	@Override
@@ -58,40 +59,82 @@ public class CookingPotBlock extends BlockWithEntity
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,BlockHitResult hit)
 	{
-		if(state.get(COOKING))
+		//if(world.isClient)
+		//{
+		//	if(player.isSneaking())
+		//	{
+		//		return ActionResult.PASS;
+		//	}
+		//
+		//	return ActionResult.SUCCESS;
+		//}
+
+		CookingPotBlockEntity entity = (CookingPotBlockEntity) world.getBlockEntity(pos);
+
+		if((entity instanceof CookingPotBlockEntity))
 		{
-			if(ItemStack.areItemsEqual(player.getMainHandStack(), Items.BOWL.getStackForRender()))
+			if(state.get(COOKING) == CookingPotState.COOKING)
 			{
-				CookingPotBlockEntity entity = (CookingPotBlockEntity) world.getBlockEntity(pos);
-				if(entity.cookTime <= 0)
+				if(player.isSneaking())
 				{
-					if(ItemStack.areEqual(new ItemStack(Items.BOWL), player.getMainHandStack()))
-					{
-						ItemStack result = entity.checkRecipe();
-						PlayerInventory playerInv = player.inventory;
-						playerInv.main.set(playerInv.selectedSlot, result.copy());
-						return ActionResult.SUCCESS;
-					}
+					return ActionResult.PASS;
 				}
+
+				return ActionResult.FAIL;
 			}
-		}
-		else
-		{
-			CookingPotBlockEntity entity = (CookingPotBlockEntity) world.getBlockEntity(pos);
-			for (ItemStack stack : entity.items)
+
+			if(state.get(COOKING) == CookingPotState.DONE)
 			{
-				System.out.println(stack.getItem().getName());
+				if(player.isSneaking())
+				{
+					return ActionResult.PASS;
+				}
+
+				if(entity.finishAndReset(player))
+				{
+					return ActionResult.SUCCESS;
+				}
+
+				return ActionResult.FAIL;
 			}
-			
-			player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
-			return ActionResult.SUCCESS;
+
+			if(state.get(COOKING) == CookingPotState.EMPTY)
+			{
+				if(player.isSneaking())
+				{
+					return ActionResult.PASS;
+				}
+
+				player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
+				return ActionResult.SUCCESS;
+			}
 		}
-		return ActionResult.FAIL;
+
+		return ActionResult.PASS;
 	}
 
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx)
 	{
 		return (BlockState)this.getDefaultState().with(FACING, ctx.getPlayerFacing());
+	}
+
+	@Environment(EnvType.CLIENT)
+	public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random)
+	{
+		if (random.nextInt(15) == 0)
+		{
+			world.playSound((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.BLOCK_CAMPFIRE_CRACKLE, SoundCategory.BLOCKS, 0.25F + random.nextFloat(), random.nextFloat() * 0.7F + 0.6F, false);
+		}
+
+		CookingPotState cookState = state.get(COOKING);
+
+		if(cookState == CookingPotState.COOKING)
+		{
+			if (random.nextInt(1) == 0)
+			{
+				world.playSound((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, ModInit.EVENT_SOUND_POT_LID_SHAKE_1, SoundCategory.BLOCKS, 0.25F + random.nextFloat(), random.nextFloat() * 0.3F + 0.2F, false);
+			}
+		}
 	}
 }

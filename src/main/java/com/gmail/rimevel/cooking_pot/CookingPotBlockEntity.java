@@ -1,32 +1,39 @@
 package com.gmail.rimevel.cooking_pot;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import com.gmail.rimevel.cooking_pot.CookingPotData.FoodGroup;
 import com.gmail.rimevel.cooking_pot.CookingPotData.Recipe;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.world.World;
 
 public class CookingPotBlockEntity extends BlockEntity implements ImplementedInventory, NamedScreenHandlerFactory, Tickable
 {
-	private static final int COOKING_TIME_TOTAL = 400;
+	private static final int COOKING_TIME_TOTAL = 800;
 
 	DefaultedList<ItemStack> items = DefaultedList.ofSize(4, ItemStack.EMPTY);
 
-	int cookTime = 0;
+	public int cookTime = COOKING_TIME_TOTAL;
 
 	public CookingPotBlockEntity()
 	{
@@ -41,28 +48,65 @@ public class CookingPotBlockEntity extends BlockEntity implements ImplementedInv
 	@Override
 	public void tick()
 	{
-		if(isCooking())
+		if(world.isClient)
+		{
+			if(getState() == CookingPotState.COOKING)
+			{
+				spawnSmokeParticles();
+			}
+		}
+
+		if(getState() == CookingPotState.COOKING)
 		{
 			if(cookTime > 0)
 			{
 				--this.cookTime;
+				return;
 			}
+
+			ItemStack result = checkRecipe();
+			clear();
+			setStack(0, result);
+			setCookingState(CookingPotState.DONE);
 		}
-		else
+
+		if(getState() == CookingPotState.EMPTY)
 		{
+			//Inventory is filled so lets start cooking :)
 			if(isFilled())
 			{
-				cookTime = COOKING_TIME_TOTAL;
-				setCookingState(true);
+				setCookingState(CookingPotState.COOKING);
+				world.playSound(null, pos, ModInit.EVENT_SOUND_POT_LID_SET, SoundCategory.BLOCKS, 1f, 1f);
 			}
 		}
 	}
 
-	public boolean isCooking()
+	//Complete a recipe if able and reset the pot to the initial state.
+	public boolean finishAndReset(PlayerEntity player)
 	{
-		return this.cookTime > 0 && getCachedState().get(CookingPotBlock.COOKING).booleanValue();
+		if(cookTime <= 0)
+		{
+			if(player.getMainHandStack().getItem() == Items.BOWL)
+			{
+				PlayerInventory playerInv = player.inventory;
+				playerInv.insertStack(items.get(0));
+				player.getMainHandStack().decrement(1);
+				world.playSound(null, pos, ModInit.EVENT_SOUND_POT_LID_LIFT, SoundCategory.BLOCKS, 1f, 1f);
+				world.setBlockState(pos, world.getBlockState(pos).with(CookingPotBlock.COOKING, CookingPotState.EMPTY));
+				cookTime = COOKING_TIME_TOTAL;
+				return true;
+			}
+		}
+
+		return false;
 	}
 
+	public CookingPotState getState()
+	{
+		return getCachedState().get(CookingPotBlock.COOKING);
+	}
+
+	//Returns the resulting dish from the ingredients in the pot.
 	public ItemStack checkRecipe()
 	{
 		ArrayList<FoodGroup> allGroups = new ArrayList<FoodGroup>();
@@ -75,22 +119,40 @@ public class CookingPotBlockEntity extends BlockEntity implements ImplementedInv
 			}
 		}
 
-		System.out.println("Food group count:" + allGroups.size());
-
-		for (Recipe recipe : CookingPotData.getRecipies()) {
+		for (Recipe recipe : CookingPotData.getRecipies())
+		{
 			if(recipe.compare(allGroups))
 			{
-				setCookingState(false);
-				return recipe.getResult();
+				return recipe.getResult().copy();
 			}
 		}
 
 		return ItemStack.EMPTY;
 	}
 
-	private void setCookingState(boolean value)
+	private void setCookingState(CookingPotState state)
 	{
-		world.setBlockState(this.pos, getCachedState().with(CookingPotBlock.COOKING, value));
+		world.setBlockState(this.pos, getCachedState().with(CookingPotBlock.COOKING, state));
+	}
+
+	//Spawn smoke, can only run on the client side!
+	private void spawnSmokeParticles()
+	{
+		if(world != null)
+		{
+			Random random = world.random;
+			if(random.nextFloat() <= 0.11f)
+			{
+				for(int i = 0; i < random.nextInt(2) + 2; ++i)
+				{
+					double x = pos.getX() + (random.nextInt(2) == 0 ? 0.15D : 0.85D);
+					double y = pos.getY() + 0.98D;
+					double z = pos.getZ() + (random.nextInt(2) == 0 ? 0.015D : 0.85D);
+
+					world.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x, y, z, 0.0D, 0.01f, 0.0D);
+				}
+			}
+		}
 	}
 
 	//Inventory
@@ -123,7 +185,7 @@ public class CookingPotBlockEntity extends BlockEntity implements ImplementedInv
 	public void fromTag(BlockState state, CompoundTag tag)
 	{
 		super.fromTag(state, tag);
-		//this.cookTime = tag.getShort("CookTime");
+		this.cookTime = tag.getShort("CookTime");
 		Inventories.fromTag(tag, items);
 	}
 
@@ -131,7 +193,7 @@ public class CookingPotBlockEntity extends BlockEntity implements ImplementedInv
 	public CompoundTag toTag(CompoundTag tag)
 	{
 		Inventories.toTag(tag, items);
-		//tag.putShort("CookTime", (short)this.cookTime);
+		tag.putShort("CookTime", (short)this.cookTime);
 		return super.toTag(tag);
 	}
 
